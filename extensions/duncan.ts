@@ -211,7 +211,7 @@ interface DuncanTarget {
   messages: any[]; // AgentMessage[]
 }
 
-function getDuncanTargets(sessionFile: string): DuncanTarget[] {
+export function getDuncanTargets(sessionFile: string): DuncanTarget[] {
   const content = readFileSync(sessionFile, "utf-8");
   const entries = parseSessionEntries(content);
   const windows = getCompactionWindows(entries);
@@ -302,7 +302,7 @@ async function sessionQuery(
 // Lineage helpers — built on pi's native parentSession header
 // ============================================================================
 
-function readSessionHeader(sessionFile: string): { id: string; parentSession?: string; timestamp: string } | null {
+export function readSessionHeader(sessionFile: string): { id: string; parentSession?: string; timestamp: string } | null {
   if (!existsSync(sessionFile)) return null;
   try {
     const fd = openSync(sessionFile, "r");
@@ -325,7 +325,7 @@ interface SessionNode {
   timestamp: string;
 }
 
-function buildSessionTree(sessionDir: string): Map<string, SessionNode> {
+export function buildSessionTree(sessionDir: string): Map<string, SessionNode> {
   const nodes = new Map<string, SessionNode>();
 
   try {
@@ -376,7 +376,7 @@ function buildSessionTree(sessionDir: string): Map<string, SessionNode> {
   return nodes;
 }
 
-function findLineageRoot(nodes: Map<string, SessionNode>, sessionFile: string): string {
+export function findLineageRoot(nodes: Map<string, SessionNode>, sessionFile: string): string {
   let current = sessionFile;
   while (true) {
     const node = nodes.get(current);
@@ -385,7 +385,7 @@ function findLineageRoot(nodes: Map<string, SessionNode>, sessionFile: string): 
   }
 }
 
-function collectLineage(nodes: Map<string, SessionNode>, rootFile: string): Set<string> {
+export function collectLineage(nodes: Map<string, SessionNode>, rootFile: string): Set<string> {
   const lineage = new Set<string>();
   const queue = [rootFile];
   while (queue.length > 0) {
@@ -398,12 +398,12 @@ function collectLineage(nodes: Map<string, SessionNode>, rootFile: string): Set<
   return lineage;
 }
 
-function resolveGeneration(sessionFile: string, sessionDir: string): number {
+export function resolveGeneration(sessionFile: string, sessionDir: string): number {
   const nodes = buildSessionTree(sessionDir);
   return nodes.get(sessionFile)?.generation ?? 0;
 }
 
-function getSessionPreview(sessionFile: string): string {
+export function getSessionPreview(sessionFile: string): string {
   if (!existsSync(sessionFile)) return "";
   try {
     const content = readFileSync(sessionFile, "utf-8");
@@ -436,7 +436,7 @@ function getSessionPreview(sessionFile: string): string {
 /**
  * Get all session files in a directory, ordered by recency (newest first).
  */
-function getProjectSessions(sessionDir: string): string[] {
+export function getProjectSessions(sessionDir: string): string[] {
   try {
     return readdirSync(sessionDir)
       .filter(f => f.endsWith(".jsonl"))
@@ -450,7 +450,7 @@ function getProjectSessions(sessionDir: string): string[] {
 /**
  * Get all session files across all project directories, ordered by recency (newest first).
  */
-function getGlobalSessions(sessionDir: string): string[] {
+export function getGlobalSessions(sessionDir: string): string[] {
   const sessionsRoot = path.dirname(sessionDir); // ~/.pi/agent/sessions/
   try {
     const dirs = readdirSync(sessionsRoot, { withFileTypes: true })
@@ -474,7 +474,7 @@ function getGlobalSessions(sessionDir: string): string[] {
 /**
  * Get descendant chain from current session (BFS, children only — excludes self).
  */
-function getDescendantChain(sessionFile: string, sessionDir: string): string[] {
+export function getDescendantChain(sessionFile: string, sessionDir: string): string[] {
   const nodes = buildSessionTree(sessionDir);
   const chain: string[] = [];
   const current = nodes.get(sessionFile);
@@ -494,7 +494,7 @@ function getDescendantChain(sessionFile: string, sessionDir: string): string[] {
 /**
  * Get ancestor chain from current session to root (parent first).
  */
-function getAncestorChain(sessionFile: string, sessionDir: string): string[] {
+export function getAncestorChain(sessionFile: string, sessionDir: string): string[] {
   const nodes = buildSessionTree(sessionDir);
   const chain: string[] = [];
   // Include current session — its earlier compaction windows are ancestors too.
