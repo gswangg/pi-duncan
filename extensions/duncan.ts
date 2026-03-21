@@ -154,8 +154,10 @@ export function getCompactionWindows(entries: any[]): CompactionWindow[] {
 // Query metadata
 // ============================================================================
 
-// Query log location. Override via DUNCAN_LOG env var.
-const DUNCAN_LOG = process.env.DUNCAN_LOG ?? path.join(os.homedir(), ".pi", "agent", "duncan.jsonl");
+// Query log location. Defaults to duncan.jsonl next to this extension file.
+// Override via DUNCAN_LOG env var.
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+const DUNCAN_LOG = process.env.DUNCAN_LOG ?? path.join(__dirname, "duncan.jsonl");
 
 interface DuncanRecord {
   question: string;
