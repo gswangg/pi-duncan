@@ -8,7 +8,9 @@ When pi sessions end or hit their context window limit, the conversation is gone
 
 **`duncan` tool** — the LLM calls this to query past sessions. Supports targeting by lineage (ancestors, descendants, parent) or by project (all sessions in the same working directory). Handles compaction windows so pre-compaction context is still reachable.
 
-**`/dfork`** — hands off the current session to a new one with a structured summary. Use when you're approaching the context limit. The new session starts with a compressed checkpoint of everything that happened.
+**`/skill:duncan`** — natural language interface. Just ask a question and the LLM figures out which sessions to search and how to route the query.
+
+**`/dfork`** — hands off the current session to a new one with a structured summary. Use when you're approaching the context limit. The new session starts with a compressed checkpoint of everything that happened. Duncan warns at 80% context usage.
 
 **`/lineage`** — shows the session tree and lets you switch between sessions. Displays generation, compaction window count, and a preview of each session's first message.
 
@@ -20,7 +22,7 @@ pi install git:github.com/gswangg/pi-duncan
 
 ## Configuration
 
-**Query log location** — duncan logs all queries to a JSONL file. Defaults to `~/.pi/agent/duncan.jsonl`. Override with:
+**Query log** — duncan logs all queries to `duncan.jsonl` in the extension's own directory (next to `duncan.ts`). Override with:
 
 ```bash
 export DUNCAN_LOG=/path/to/duncan.jsonl
@@ -30,7 +32,7 @@ export DUNCAN_LOG=/path/to/duncan.jsonl
 
 ### Querying past sessions
 
-The LLM uses the `duncan` tool automatically when it needs information from a previous session. You can also invoke it explicitly via the skill:
+The LLM uses the `duncan` tool automatically when it needs information from a previous session. You can also ask directly via the skill:
 
 ```
 /skill:duncan what did we decide about the database schema?
