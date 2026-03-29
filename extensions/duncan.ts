@@ -720,7 +720,7 @@ export default function (pi: ExtensionAPI) {
       const defaultModelAndKey = await getModelAndKey(ctx);
       const systemPrompt = ctx.getSystemPrompt();
       const sourceSession = path.basename(sessionFile);
-      const BATCH_SIZE = params.batchSize ?? 3;
+      const BATCH_SIZE = params.batchSize ?? 10;
       let completed = 0;
 
       // Resolve model for a target: use the window's model if available, fall back to current session's model
