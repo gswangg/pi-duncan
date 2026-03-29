@@ -841,9 +841,13 @@ export default function (pi: ExtensionAPI) {
         results.push(...batchResults);
       }
 
+      // Separate errors from real results
+      const errors = results.filter(r => r.answer.startsWith("Error: "));
+      const nonErrors = results.filter(r => !r.answer.startsWith("Error: "));
+
       // Filter: only return answers that have context, unless none do
-      const withContext = results.filter(r => r.hasContext);
-      const relevant = withContext.length > 0 ? withContext : results;
+      const withContext = nonErrors.filter(r => r.hasContext);
+      const relevant = withContext.length > 0 ? withContext : nonErrors.length > 0 ? nonErrors : results;
 
       const answers = relevant.map(r => {
         const windowLabel = windowCount > sessionCount ? ` (window ${r.window})` : "";
@@ -854,6 +858,11 @@ export default function (pi: ExtensionAPI) {
       }).join("\n\n---\n\n");
 
       const parts = [`**${params.question}**\n\n${answers}`];
+
+      if (errors.length > 0) {
+        const errorLines = errors.map(r => `- ${r.session} (window ${r.window}): ${r.answer}`).join("\n");
+        parts.push(`\n\n---\n**${errors.length} error(s):**\n${errorLines}`);
+      }
 
       if (hasMore) {
         const nextOffset = offset + limit;
