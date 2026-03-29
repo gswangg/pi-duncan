@@ -17,9 +17,9 @@ When pi sessions end or hit their context window limit, the conversation is gone
 ## Install
 
 ```bash
-pi install npm:@gswangg/pi-duncan
+pi install npm:@gswangg/duncan-pi
 # or
-pi install git:github.com/gswangg/pi-duncan
+pi install git:github.com/gswangg/duncan-pi
 ```
 
 ## Configuration
