@@ -694,6 +694,7 @@ export default function (pi: ExtensionAPI) {
       sessions: Type.String({ description: "Which sessions to query: 'parent' (immediate parent only), 'ancestors' (walk up lineage, parent first), 'descendants' (walk down to children, BFS), 'project' (all sessions from same working directory, newest first), 'global' (all sessions across all projects, newest first), or a session filename." }),
       limit: Type.Optional(Type.Number({ description: "Max windows to query. Defaults: 50 for ancestors/descendants/project/global, unlimited for parent and explicit filename." })),
       offset: Type.Optional(Type.Number({ description: "Skip this many windows before querying. Use for pagination when a previous query didn't find what you needed. Default: 0." })),
+      batchSize: Type.Optional(Type.Number({ description: "Max concurrent API calls per batch. Default: 3. Lower to avoid rate limiting." })),
     }),
     async execute(_toolCallId, params, signal, onUpdate, ctx) {
       const sessionFile = ctx.sessionManager.getSessionFile();
@@ -719,7 +720,7 @@ export default function (pi: ExtensionAPI) {
       const defaultModelAndKey = await getModelAndKey(ctx);
       const systemPrompt = ctx.getSystemPrompt();
       const sourceSession = path.basename(sessionFile);
-      const BATCH_SIZE = 3;
+      const BATCH_SIZE = params.batchSize ?? 3;
       let completed = 0;
 
       // Resolve model for a target: use the window's model if available, fall back to current session's model
