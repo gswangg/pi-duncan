@@ -1,7 +1,7 @@
 {
   "name": "@gswangg/duncan-pi",
   "version": "0.2.0",
-  "description": "Session memory for pi \u2014 query dormant sessions, hand off context across session boundaries",
+  "description": "Session memory for pi — query dormant sessions, hand off context across session boundaries",
   "keywords": [
     "pi-package"
   ],
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@mariozechner/pi-ai": "^0.62.0",
-    "@mariozechner/pi-coding-agent": "^0.62.0",
+    "@mariozechner/pi-coding-agent": "^0.64.0",
     "@sinclair/typebox": "*"
   },
   "pi": {
